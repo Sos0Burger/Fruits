@@ -22,8 +22,7 @@ public class Fruits extends Game{
         parameter.size=50;
         font = generator.generateFont(parameter);
         font.setColor(0,0,0,255);
-        menuBackgroundImg = new Texture(Gdx.files.internal("menuBackground.jpeg"));
-        menuBackgroundSprite = new Sprite(menuBackgroundImg);
+        menuBackgroundImg = new Texture(Gdx.files.internal("menuBackground.jpg"));
         this.setScreen(new MainMenu(this));
     }
 
