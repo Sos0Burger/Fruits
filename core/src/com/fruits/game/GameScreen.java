@@ -27,6 +27,7 @@ public class GameScreen implements Screen {
     Texture orangeImg;
     Texture pearImg;
     Texture[] fruitDropArray;
+    Texture gameBackgroundImg;
 
     Sound catchSound;
     Music catchMusic;
@@ -48,6 +49,7 @@ public class GameScreen implements Screen {
         grapesImg = new Texture(Gdx.files.internal("grapes.png"));
         orangeImg = new Texture(Gdx.files.internal("orange.png"));
         pearImg = new Texture(Gdx.files.internal("pear.png"));
+        gameBackgroundImg = new Texture(Gdx.files.internal("gameBackground.jpg"));
 
         fruitDropArray = new Texture[] {appleImg, bananaImg,grapesImg, orangeImg, pearImg};
 
@@ -77,7 +79,7 @@ public class GameScreen implements Screen {
         int type;
         fruit.x = MathUtils.random(0, Gdx.graphics.getWidth()-fruitCatcherImg.getWidth() );
         fruit.y = Gdx.graphics.getHeight();
-        fruit.radius = 57;
+        fruit.radius = 60;
         type = MathUtils.random(0,4);
         fruitDrops.add(new FruitDrop(fruit, type));
         lastFruitTime = TimeUtils.nanoTime();
@@ -94,6 +96,7 @@ public class GameScreen implements Screen {
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        batch.draw(gameBackgroundImg,0,0);
         batch.draw(fruitCatcherImg, fruitCatcher.x, fruitCatcher.y-215);
         for(FruitDrop fruitdrop: fruitDrops) {
             batch.draw(fruitDropArray[fruitdrop.type], fruitdrop.circle.x-fruitdrop.circle.radius, fruitdrop.circle.y-fruitdrop.circle.radius);
