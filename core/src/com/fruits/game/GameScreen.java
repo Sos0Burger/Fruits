@@ -37,7 +37,9 @@ public class GameScreen implements Screen {
 
     Rectangle fruitCatcher;
     Array<FruitDrop> fruitDrops;
+
     long lastFruitTime;
+    int combo = 0;
 
     Vector3 touchPos = new Vector3();
 
@@ -98,6 +100,7 @@ public class GameScreen implements Screen {
         batch.begin();
         batch.draw(gameBackgroundImg,0,0);
         batch.draw(fruitCatcherImg, fruitCatcher.x, fruitCatcher.y-215);
+        game.font.draw(batch, String.valueOf(combo), (float)Gdx.graphics.getWidth()/2,(float)Gdx.graphics.getHeight()/2 );
         for(FruitDrop fruitdrop: fruitDrops) {
             batch.draw(fruitDropArray[fruitdrop.type], fruitdrop.circle.x-fruitdrop.circle.radius, fruitdrop.circle.y-fruitdrop.circle.radius);
         }
@@ -120,9 +123,10 @@ public class GameScreen implements Screen {
         while(iter.hasNext()) {
             FruitDrop fruitdrop = iter.next();
             fruitdrop.circle.y -= 200 * Gdx.graphics.getDeltaTime();
-            if(fruitdrop.circle.y + Gdx.graphics.getWidth() < 0) iter.remove();
+            if(fruitdrop.circle.y + fruitdrop.circle.radius*2 < 0){ iter.remove();combo=0;}
             if(Intersector.overlaps(fruitdrop.circle, fruitCatcher)) {
                 catchSound.play();
+                combo++;
                 iter.remove();
             }
         }
