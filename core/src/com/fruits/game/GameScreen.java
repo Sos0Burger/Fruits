@@ -39,7 +39,10 @@ public class GameScreen implements Screen {
     Array<FruitDrop> fruitDrops;
 
     long lastFruitTime;
+    int speed = 200;
+    long time = 1000000000;
     int combo = 0;
+    boolean isModeActive = false;
 
     Vector3 touchPos = new Vector3();
 
@@ -78,11 +81,32 @@ public class GameScreen implements Screen {
     }
     private void spawnFruitdrop() {
         Circle fruit = new Circle();
-        int type;
+        int type = 0;
+        if (isModeActive & speed > 200){
+            speed-=10;
+        }
+        if (isModeActive & time < 1000000000){
+            time+=25000000;
+        }
         fruit.x = MathUtils.random(0, Gdx.graphics.getWidth()-fruitCatcherImg.getWidth() );
+
+        if(MathUtils.randomBoolean(0.40f)){
+            type =0;
+        }
+        else if(MathUtils.randomBoolean(0.20f)){
+            type = 1;
+        }
+        else if(MathUtils.randomBoolean(0.20f)){
+            type = 2;
+        }
+        else if(MathUtils.randomBoolean(0.15f)){
+            type = 3;
+        }
+        else if(MathUtils.randomBoolean(0.05f)){
+            type = 4;
+        }
         fruit.y = Gdx.graphics.getHeight();
         fruit.radius = 60;
-        type = MathUtils.random(0,4);
         fruitDrops.add(new FruitDrop(fruit, type));
         lastFruitTime = TimeUtils.nanoTime();
     }
@@ -113,21 +137,39 @@ public class GameScreen implements Screen {
         }
         if(Gdx.input.isKeyPressed(Input.Keys.A)) fruitCatcher.x -= 1000 * Gdx.graphics.getDeltaTime();
         if(Gdx.input.isKeyPressed(Input.Keys.D)) fruitCatcher.x += 1000 * Gdx.graphics.getDeltaTime();
+        if(Gdx.input.isKeyPressed(Input.Keys.A) & Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) fruitCatcher.x -= 2000 * Gdx.graphics.getDeltaTime();
+        if(Gdx.input.isKeyPressed(Input.Keys.D) & Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) fruitCatcher.x += 2000 * Gdx.graphics.getDeltaTime();
 
         if(fruitCatcher.x < 0) fruitCatcher.x = 0;
         if(fruitCatcher.x > Gdx.graphics.getWidth() - fruitCatcherImg.getWidth() ) fruitCatcher.x = Gdx.graphics.getWidth() - fruitCatcherImg.getWidth() ;
 
-        if(TimeUtils.nanoTime() - lastFruitTime > 1000000000) spawnFruitdrop();
+        if(TimeUtils.nanoTime() - lastFruitTime > time) spawnFruitdrop();
 
         Iterator<FruitDrop> iter = fruitDrops.iterator();
         while(iter.hasNext()) {
             FruitDrop fruitdrop = iter.next();
-            fruitdrop.circle.y -= 200 * Gdx.graphics.getDeltaTime();
+            fruitdrop.circle.y -= speed * Gdx.graphics.getDeltaTime();
             if(fruitdrop.circle.y + fruitdrop.circle.radius*2 < 0){ iter.remove();combo=0;}
             if(Intersector.overlaps(fruitdrop.circle, fruitCatcher)) {
                 catchSound.play();
-                combo++;
+                if(fruitdrop.type == 0){
+                    combo++;
+                }
+                if(fruitdrop.type == 1){
+                    combo+=3;
+                }
                 iter.remove();
+                if(fruitdrop.type == 2){
+                    combo+=5;
+                }
+                if(fruitdrop.type == 3){
+                    speed = 600;
+                    isModeActive = true;
+                }
+                if(fruitdrop.type == 4){
+                    time/=2;
+                    isModeActive = true;
+                }
             }
         }
     }
