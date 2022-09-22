@@ -12,7 +12,6 @@ public class Fruits extends Game{
     public SpriteBatch batch;
     public BitmapFont font;
     public Texture menuBackgroundImg;
-    public Sprite menuBackgroundSprite;
 
     public void create() {
         batch = new SpriteBatch();
